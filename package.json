@@ -1,0 +1,52 @@
+{
+  "name": "react-beetroot",
+  "version": "1.0.0",
+  "description": "react-beetroot",
+  "main": "index.jsx",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ihor-bielchenko/react-beetroot.git"
+  },
+  "keywords": [
+    "base",
+    "react",
+    "redux"
+  ],
+  "author": "ihor-bielchenko",
+  "license": "ISC",
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "draft-js": "^0.10.5",
+    "draftjs-to-html": "^0.8.4",
+    "html-to-draftjs": "^1.4.0",
+    "react": "^16.8.1",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^16.8.1",
+    "react-draft-wysiwyg": "^1.13.2",
+    "react-html-parser": "^2.0.2",
+    "react-image-lazy-load": "^1.3.0",
+    "react-jss": "^8.6.1",
+    "react-loadable": "^5.5.0",
+    "react-redux": "^6.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^2.1.5",
+    "react-slick": "^0.23.2",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^2.2.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
