@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ihor-bielchenko/react-beetroot.git"
+    "url": "https://github.com/nkustov/react1.git"
   },
   "keywords": [
     "base",
     "react",
     "redux"
   ],
-  "author": "ihor-bielchenko",
+  "author": "nkustov",
   "license": "ISC",
   "dependencies": {
     "classnames": "^2.2.6",
