@@ -1,10 +1,15 @@
 import React from 'react';
+import withStyles from 'react-jss';
 import Toolbar from 'components/Toolbar';
 import Table from 'components/Table';
 import TableHead from 'components/TableHead';
 import TableHeadCell from 'components/TableHeadCell';
 import TableRow from 'components/TableRow';
 import TableBodyCell from 'components/TableBodyCell';
+
+const styles = ({ btn }) => ({
+	btn
+});
 
 class UsersRoute extends React.PureComponent {
 	state = {
@@ -98,14 +103,21 @@ class UsersRoute extends React.PureComponent {
 
 	render = () => {
 		const { data } = this.state;
+		const {classes} = this.props;
 		return <>
-			<Toolbar title="Users">
-				<button>Создать пользователя</button>
-				<button onClick={this.handleSwitchSelectAll}>
-					Выделить всех
+			<Toolbar title="Users" titleColor="red">
+				<button className={classes.btn}>
+					Создать пользователя
 				</button>
-				<button onClick={this.handleDeleteSelectedRows}>
-					Удалить выделенных
+				<button 
+					className={classes.btn}
+					onClick={this.handleSwitchSelectAll}>
+						Выделить всех
+				</button>
+				<button 
+					className={classes.btn}
+					onClick={this.handleDeleteSelectedRows}>
+						Удалить выделенных
 				</button>
 			</Toolbar>
 
@@ -160,4 +172,4 @@ class UsersRoute extends React.PureComponent {
 	}
 }
 
-export default UsersRoute;
+export default withStyles(styles)(UsersRoute);

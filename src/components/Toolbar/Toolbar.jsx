@@ -1,10 +1,24 @@
 import React from 'react';
-import './styles.css';
+import withStyles from 'react-jss';
+// import './styles.css';
+
+const styles = ({ palette: {secondary } }) => {
+	// console.log(secondary)
+	return {
+		root: {
+			display: 'flex',
+			fontFamily: 'arial',
+			color: (props) => props.titleColor || secondary,
+			justifyContent: 'space-between'
+		}
+	}
+};
 
 class Toolbar extends React.PureComponent {
 	render = () => {
-		const { title = '', children = [] } = this.props;
-		return <div className="toolbar__cotainer">
+		// console.log(this.props.titleColor)
+		const { title = '', children = [], classes } = this.props;
+		return <div className={classes.root}>
 			<h1>{title}</h1>
 			<div>
 				{children}
@@ -13,4 +27,4 @@ class Toolbar extends React.PureComponent {
 	}
 }
 
-export default Toolbar;
+export default withStyles(styles)(Toolbar);
