@@ -3,8 +3,10 @@ import './styles.css';
 
 class TableRow extends React.PureComponent {
 	render = () => {
-		const { children = [] } = this.props;
-		return <tr className="table-row__container">{children}</tr>
+		const { children = [], onClick } = this.props;
+		return <tr 
+			onClick={onClick}
+			className="table-row__container">{children}</tr>
 	}
 }
 

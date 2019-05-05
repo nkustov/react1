@@ -1,9 +1,6 @@
 import React from 'react';
 import withStyles from 'react-jss';
-// import './styles.css';
-
-const styles = ({ palette: {secondary } }) => {
-	// console.log(secondary)
+const styles = ({ palette: { secondary } }) => {
 	return {
 		root: {
 			display: 'flex',
@@ -16,7 +13,6 @@ const styles = ({ palette: {secondary } }) => {
 
 class Toolbar extends React.PureComponent {
 	render = () => {
-		// console.log(this.props.titleColor)
 		const { title = '', children = [], classes } = this.props;
 		return <div className={classes.root}>
 			<h1>{title}</h1>

@@ -6,7 +6,7 @@ class App extends React.Component {
 
 	getAsyncRouteComponent = (name = '') => {
 		const Route = Loadable({
-			loader: () => import(`routes/${name}Route`),
+			loader: () => import(`./routes/${name}Route`),
 			loading: () => null
 		});
 		return <Route />

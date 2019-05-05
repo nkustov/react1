@@ -1,66 +1,57 @@
 import React from 'react';
 import withStyles from 'react-jss';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Toolbar from 'components/Toolbar';
 import Table from 'components/Table';
 import TableHead from 'components/TableHead';
 import TableHeadCell from 'components/TableHeadCell';
 import TableRow from 'components/TableRow';
 import TableBodyCell from 'components/TableBodyCell';
+import setDataCollection from 'actions/setDataCollection.js';
+import Dialog from 'components/Dialog';
 
-const styles = ({ btn }) => ({
-	btn
+const styles = () => ({
+	btn: {
+		backgroundColor: 'transparent',
+		margin: 2,
+		padding: 8,
+		border: '1px solid grey',
+		cursor: 'pointer',
+		'&:hover': {
+			color: '#FFF',
+			backgroundColor: 'grey'
+		}
+	},
+	form: {
+		marginTop: 12,
+		'& input': {
+			width: 'calc(100% - 20px)',
+			marginBottom: 12
+		}
+	}
 });
 
 class UsersRoute extends React.PureComponent {
-	state = {
-		data: [{
-			id: 1,
-			name: 'Name1',
-			surname: 'Surname1',
-			email: 'email1@mail.com',
-			phone: '+30000000000',
-			city: 'City1',	
-		}, {
-			id: 2,
-			name: 'Name2',
-			surname: 'Surname2',
-			email: 'email2@mail.com',
-			phone: '+30000000000',
-			city: 'City2',
-		}, {
-			id: 3,
-			name: 'Name3',
-			surname: 'Surname3',
-			email: 'email3@mail.com',
-			phone: '+30000000000',
-			city: 'City3',
-			checked: true
-		}, {
-			id: 4,
-			name: 'Name4',
-			surname: 'Surname4',
-			email: 'email4@mail.com',
-			phone: '+30000000000',
-			city: 'City4',
-		}, {
-			id: 5,
-			name: 'Name3',
-			surname: 'Surname3',
-			email: 'email3@mail.com',
-			phone: '+30000000000',
-			city: 'City3',
-		}, {
-			id: 6,
-			name: 'Name4',
-			surname: 'Surname4',
-			email: 'email4@mail.com',
-			phone: '+30000000000',
-			city: 'City4',
-		}]
-	}
-
 	commonCheckbox = null;
 	checkboxNodes = {};
+
+	state = {
+		displayDialogFlag: false,
+		currentNameValue: 'Default',
+		currentUserData: {}
+	};
+
+	componentDidMount = () => {
+		(async () => {
+			const { setTableData } = this.props;
+			const response = await fetch('http://localhost:3002/users', {
+				mode: 'cors'
+			});
+			const data = await response.json();
+			setTableData('USERS', data);
+		})();
+	}
 
 	handleSwitchSelectAll = (e) => {
 		const currentStateFlag = e.target.checked === undefined ? 
@@ -79,7 +70,7 @@ class UsersRoute extends React.PureComponent {
 	}
 
 	handleDeleteSelectedRows = () => {
-		const { data } = this.state;
+		const { data, setTableData } = this.props;
 		let id;
 		let idsForDelete = [];
 		let newCheckboxeNodes = {};
@@ -96,28 +87,60 @@ class UsersRoute extends React.PureComponent {
 			}
 		}
 		this.checkboxNodes = { ...newCheckboxeNodes };
-		this.setState({
-			data: data.filter((item) => idsForDelete.indexOf(item.id) === -1)
-		});
+		setTableData('USERS', data.filter((item) => idsForDelete.indexOf(Number(item.id)) === -1));
+	}
+
+	handleSubmit = (e) => {
+		e.preventDefault();
+		let el;
+		let postData = {};
+		let allow = true;
+		for (el in e.target.elements) {
+			if (e.target.elements[el].localName === 'input') {
+				if (e.target.elements[el].value) {
+					postData[e.target.elements[el].name] = e.target.elements[el].value
+					e.target.elements[el].style.border = '1px solid transparent';
+				}
+				else {
+					allow = false;
+					e.target.elements[el].style.border = '1px solid red';
+				}
+			}
+		}
+		if (allow) {
+			const { data, setTableData } = this.props;
+			data.push({
+				id: data[data.length - 1].id + 1,
+				...postData
+			});
+			setTableData('USERS', [ ...data ]);
+			this.setState({ 
+				displayDialogFlag: false 
+			});
+		}
 	}
 
 	render = () => {
-		const { data } = this.state;
-		const {classes} = this.props;
+		const { displayDialogFlag, currentNameValue, currentUserData } = this.state;
+		const { classes, data = [] } = this.props;
 		return <>
 			<Toolbar title="Users" titleColor="red">
-				<button className={classes.btn}>
-					Создать пользователя
-				</button>
 				<button 
 					className={classes.btn}
+					onClick={() => this.setState({
+						displayDialogFlag: true
+					})}>
+					Создать пользователя
+				</button>
+				<button
+					className={classes.btn} 
 					onClick={this.handleSwitchSelectAll}>
-						Выделить всех
+					Выделить всех
 				</button>
 				<button 
 					className={classes.btn}
 					onClick={this.handleDeleteSelectedRows}>
-						Удалить выделенных
+					Удалить выделенных
 				</button>
 			</Toolbar>
 
@@ -143,7 +166,12 @@ class UsersRoute extends React.PureComponent {
 				</TableHead>
 				<tbody>
 					{data.map((item, i) => (
-						<TableRow key={i}>
+						<TableRow 
+							key={i} 
+							onClick={() => this.setState({
+								currentUserData: item,
+								displayDialogFlag: true
+							})}>
 						{(() => {
 							let row = [];
 							let key;
@@ -168,8 +196,70 @@ class UsersRoute extends React.PureComponent {
 					))}
 				</tbody>
 			</Table>
+			<Dialog	
+				open={displayDialogFlag}
+				title="Создать пользователя">
+				<form 
+					className={classes.form}
+					onSubmit={this.handleSubmit}>
+					<div>
+						<input
+							type="text"
+							name="name"
+							placeholder="Type name ..."
+							defaultValue={currentUserData.name || ''} />
+					</div>
+					<div>
+						<input
+							type="text"
+							name="surname"
+							placeholder="Type surnaame ..."
+							defaultValue={currentUserData.surname || ''} />
+					</div>
+					<div>
+						<input
+							type="email"
+							name="email"
+							placeholder="Type email ..."
+							defaultValue={currentUserData.email || ''} />
+					</div>
+					<div>
+						<input
+							type="text"
+							name="phone"
+							placeholder="Type phone ..."
+							defaultValue={currentUserData.phone || ''} />
+					</div>
+					<div>
+						<input
+							type="text"
+							name="city"
+							placeholder="Type city ..."
+							defaultValue={currentUserData.city || ''} />
+					</div>
+					<button className={classes.btn}>
+						Создать
+					</button>
+					<button 
+						className={classes.btn}
+						onClick={() => this.setState({
+							displayDialogFlag: false,
+							currentUserData: {}
+						})}>
+						Отменить
+					</button>
+				</form>
+			</Dialog>
 		</>
 	}
 }
 
-export default withStyles(styles)(UsersRoute);
+const mapStateToProps = (store) => ({
+	data: store.usersData
+});
+
+const mapActionsToProps = (dispatch) => ({
+	setTableData: bindActionCreators(setDataCollection, dispatch)
+});
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(UsersRoute));

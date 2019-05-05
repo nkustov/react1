@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles.css';
+// import './styles.css';
 
 class TableBodyCell extends React.PureComponent {
 	render = () => {
